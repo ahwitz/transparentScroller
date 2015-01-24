@@ -41,6 +41,8 @@ for cur_start_pos in range(0, img_y - new_img_height):
  	for x in range(img_x):
  		for y in range(new_img_height):
  			new_img_pix[x, y] = pix_arr[x, cur_start_pos + y]
+ 			if new_img_pix[x, y][0:3] == (255, 255, 255):
+				new_img_pix[x, y] = new_img_pix[x, y][0:3] + (0,)
 
  	start_pos_string = str(cur_start_pos)
  	while len(start_pos_string) < 5:
@@ -49,3 +51,4 @@ for cur_start_pos in range(0, img_y - new_img_height):
  	new_img.save("imgout/frame" + start_pos_string + ".png")
  	if cur_start_pos % 10 == 0:
  		print "Created", cur_start_pos, "out of", (img_y - new_img_height), "images."
+
