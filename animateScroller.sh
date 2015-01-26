@@ -45,7 +45,7 @@ filenames=${filenames:1}
 
 echo "Running python script on $filenames"
 source /Users/vp2/VideoProd_Assets/TransparentScrollerScript/scrollerEnv/bin/activate
-#python /Users/vp2/VideoProd_Assets/TransparentScrollerScript/scroller.py -t $OUTPUT $filenames
+python /Users/vp2/VideoProd_Assets/TransparentScrollerScript/scroller.py -t $OUTPUT $filenames
 if [ $? == 1 ]
   then
     echo "Error in python - aborting."
