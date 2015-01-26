@@ -1,2 +1,2 @@
-PIL==1.1.7
+pillow
 pgmagick==0.5.8
