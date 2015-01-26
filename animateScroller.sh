@@ -14,23 +14,23 @@ This script creates an animated scrolling Prores 4444 movie with transparent bac
 OPTIONS
    -h       Show this message
    -s(opt)  FPS for FFMPEG, defaults to 30 fps
-   -o(req)  Output file location
+   -o(req)  Output filename WITHOUT EXTENSION. This will add .mov automatically
    -i(req)  Input files, either one PDF or a bunch of pngs, filenames separated by spaces
 EOF
 }
 
 SPEED=30
 OUTPUT=""
+
 while getopts “hs:o:i:” OPT; do
   case $OPT in
     h) 
       usage
       exit 1;;
     s) 
-      echo "got speed $OPTARG"
       SPEED=$OPTARG;;
     o)
-      OUTPUT=$OPTARG;;
+      OUTPUT=$OPTARG
   esac
 done
 shift $(( OPTIND - 2 ))
@@ -43,36 +43,27 @@ done
 filenames=$(printf " %s" "${filesArr[@]}")
 filenames=${filenames:1}
 
-if [ -f $1 ] 
+echo "Running python script on $filenames"
+source /Users/vp2/VideoProd_Assets/TransparentScrollerScript/scrollerEnv/bin/activate
+#python /Users/vp2/VideoProd_Assets/TransparentScrollerScript/scroller.py -t $OUTPUT $filenames
+if [ $? == 1 ]
   then
-    echo "Running python script on $filenames"
-    source /Users/vp2/VideoProd_Assets/TransparentScrollerScript/scrollerEnv/bin/activate
-    python /Users/vp2/VideoProd_Assets/TransparentScrollerScript/scroller.py $filenames
-    if [ $? == 1 ]
-      then
-        echo “Error in python - aborting.”
-        exit 1
-    fi
-
-    touch $OUTPUT
-
-    echo “Running ffmpeg on contents of imgout”
-    ffmpeg -framerate $SPEED -i /Users/vp2/VideoProd_Assets/TransparentScrollerScript/imgout/frame%05d.png -vcodec prores_ks -pix_fmt yuva444p10le $OUTPUT
-
-    if [ $? == 1 ]
-      then
-        echo “Error in ffmpeg - aborting.”
-        exit 1
-    fi
-
-    echo “Cleaning up…”
-    deactivate
-    rm -rf /Users/vp2/VideoProd_Assets/TransparentScrollerScript/imgout
-  else
-    echo “The input file does not exist. Keep in mind that any file paths with spaces in them require quotation marks.”
-    ls $1
+    echo "Error in python - aborting."
     exit 1
 fi
 
-echo “okay”
+OUTPUT_FILE=$OUTPUT".mov"
+
+echo "Running ffmpeg on contents of imgout"
+ffmpeg -framerate $SPEED -i /Users/vp2/VideoProd_Assets/TransparentScrollerScript/$OUTPUT/frame%05d.png -vcodec prores_ks -pix_fmt yuva444p10le $OUTPUT_FILE
+
+if [ $? == 1 ]
+  then
+    echo "Error in ffmpeg - aborting."
+    exit 1
+fi
+
+echo "Cleaning up…"
+deactivate
+rm -rf /Users/vp2/VideoProd_Assets/TransparentScrollerScript/imgout
 exit 0

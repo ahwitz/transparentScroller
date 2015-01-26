@@ -10,23 +10,37 @@ from pgmagick import Image as mImage, ImageList
 #alpha 0 is true transparent\
 
 parser = argparse.ArgumentParser(description='Creates a transparent video scrolling through a pdf.')
-#parser.add_argument('speed', metavar='s', help='pixels to move between frames')
+parser.add_argument('-t', '--temp', metavar='t', nargs=1, help='temp directory')
 parser.add_argument('input', metavar='i', nargs='*', help='input file')
 args = parser.parse_args()
+args.temp = args.temp[0]
 
+pdf = False
+png = False
 type = ""
 images = []
+for file in args.input:
+	if len(re.findall("\.pdf", file)) > 0:
+		pdf = True
+	elif len(re.findall("\.png", file)) > 0:
+		png = True
+	else:
+		print "File type must be png or pdf, and all files must have the same extension."
+		sys.exit(1)
 
-if len(re.findall("\.pdf", args.input[0])) > 0:
-	type = "pdf"
-elif len(re.findall("\.png", args.input[0])) > 0:
-	type = "png"
-else:
+if pdf == png:
 	print "File type must be png or pdf, and all files must have the same extension."
-	sys.exit(1)
+        sys.exit(1)
+elif pdf:
+    type = "pdf"
+elif png:
+    type = "png"
 
-if not os.path.exists('imgout'):
-    os.makedirs('imgout')
+if not os.path.exists(args.temp):
+    os.makedirs(args.temp)
+else:
+    print "It looks like the movie file already exists in this folder and there may be another copy of this script running. To avoid any kind of overlap, please make sure there's no directory named", args.temp, "in /Users/vp2/VideoProd_Assets/TransparentScrollerScript/" 
+    sys.exit(1)
 
 if type == "pdf":
 	if not os.path.exists(args.input):
@@ -42,10 +56,10 @@ if type == "pdf":
 		print "ImageMagick threw an error. Make sure the filename is correct."
 		sys.exit()
 	print "ImageMagick is converting to png..."
-	mimage.write('imgout/temp.png')
+	mimage.write(args.temp + '/temp.png')
 
 	print "Loading into PIL..."
-	images[0] = Image.open("imgout/temp.png")
+	images[0] = Image.open(args.temp + "/temp.png")
 
 else:
 	images = [Image.open(a) for a in args.input]
@@ -97,7 +111,7 @@ for cur_start_pos in range(0, pix_arr_height - new_img_height):
  	while len(start_pos_string) < 5:
  		start_pos_string = "0" + start_pos_string
 	
- 	new_img.save("imgout/frame" + start_pos_string + ".png")
+ 	new_img.save(args.temp + "/frame" + start_pos_string + ".png")
  	if cur_start_pos % 10 == 0:
  		print "Created", cur_start_pos, "out of", (pix_arr_height - new_img_height), "images."
 	
@@ -113,4 +127,4 @@ start_pos_string = str(cur_start_pos)
 while len(start_pos_string) < 5:
         start_pos_string = "0" + start_pos_string
 
-new_img.save("imgout/frame" + start_pos_string + ".png")
+new_img.save(args.temp + "/frame" + start_pos_string + ".png")
