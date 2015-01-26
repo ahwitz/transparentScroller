@@ -101,7 +101,6 @@ else:
 	pix_arr_height += new_img_height
 
 	def convert_pix(tuple):			
-		print tuple
 		if tuple[0] > 125:
 		#if tuple == (255, 255, 255):
 			return (0, 0, 0, 0)
