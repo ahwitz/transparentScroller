@@ -82,6 +82,11 @@ rgba = (len(pix_arr[0,0]) == 4)
 
 print "Inverting image..."
 if rgba:
+	for y in range(pix_arr_height, pix_arr_height + new_img_height + 50):
+        	for x in range(img_x):
+        	        pix_arr[x, y] = (255, 255, 255, 0)
+	pix_arr_height += new_img_height
+
 	def convert_pix(tuple):
 		if tuple[3] == (0):
 			return (0,0,0,0)
@@ -90,10 +95,18 @@ if rgba:
 		else:
 			return pix_arr[x, y]
 else:
+	for y in range(pix_arr_height, pix_arr_height + new_img_height + 50):
+	        for x in range(img_x):
+	                pix_arr[x, y] = (255, 255, 255)
+	pix_arr_height += new_img_height
+
 	def convert_pix(tuple):			
-		if tuple == (255, 255, 255):
+		print tuple
+		if tuple[0] > 125:
+		#if tuple == (255, 255, 255):
 			return (0, 0, 0, 0)
-		elif tuple == (0, 0, 0):
+		elif tuple[0] < 126:
+		#elif tuple == (0, 0, 0):
 			return (255, 255, 255, 255)
 		else:
 			return pix_arr[x, y] + (0,)
@@ -104,7 +117,7 @@ new_img = Image.new("RGBA", (img_x, new_img_height))
 new_img_pix = new_img.load()
 for cur_x in range(img_x):
 	for cur_y in range(new_img_height - 1):
-		new_img_pix[cur_x, cur_y] = convert_pix(pix_arr[cur_x, cur_y])
+		new_img_pix[cur_x, cur_y] = convert_pix((pix_arr[cur_x, cur_y]))
 
 for cur_start_pos in range(0, pix_arr_height - new_img_height):
 	start_pos_string = str(cur_start_pos)
