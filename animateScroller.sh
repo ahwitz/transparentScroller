@@ -65,5 +65,5 @@ fi
 
 echo "Cleaning up…"
 deactivate
-rm -rf /Users/vp2/VideoProd_Assets/TransparentScrollerScript/$OUTPUT
+#rm -rf /Users/vp2/VideoProd_Assets/TransparentScrollerScript/$OUTPUT
 exit 0
