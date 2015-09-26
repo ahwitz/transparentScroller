@@ -10,7 +10,7 @@ SPEED = an integer number of images to render per second in the movie. 45 is pre
 
 OUTPUT = a file name WITHOUT EXTENSION relative to where you are for the output file. The script will automatically append “.mov” to whatever name you give it.
 
-input1/2/3 = either one PDF with multiple pages (not implemented yet) or a series of PNG files to use as input. They will be stacked vertically in the order they are declared in this script.
+input1/2/3 = either one PDF with multiple pages or a series of PNG files to use as input. They will be stacked vertically in the order they are declared in this script.
 
 
 Thus:
